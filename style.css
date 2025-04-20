@@ -161,6 +161,14 @@ background-color:rgb(61, 69, 119);
   pointer-events: none; /* ✅ Prevent interaction */
 }
 
+#api-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
 .swal-modal {
   width: 300px !important; /* Set desired width */
   height: 320px !important; /* Adjust height dynamically */

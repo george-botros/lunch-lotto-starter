@@ -11,6 +11,19 @@ let spinAngleStart = 0;
 let spinTime = 0;
 let spinTimeTotal = 0;
 
+async function logSelectedRestaurant(name, link) {
+  chrome.storage.local.get({ restaurantLog: [] }, ({ restaurantLog }) => {
+    restaurantLog.unshift({
+      name,
+      link,
+      when: new Date().toISOString()
+    });
+    // keep only latest 50
+    chrome.storage.local.set({ restaurantLog: restaurantLog.slice(0,50) });
+  });
+}
+
+
 function scaleCanvas(canvas, ctx) {
     const pixelRatio = window.devicePixelRatio || 1;
   
@@ -199,6 +212,7 @@ function truncateOption(option) {
         icon: "success",
         button: false, // Hide the default OK button
       });
+      logSelectedRestaurant(selectedOption.name, selectedOption.googleMapsLink);
       
       return;
     }

@@ -1,4 +1,4 @@
-const apiKey = "YOUR_API_KEY";
+const apiKey = "AIzaSyDXjD3zfCObIyIsAQIyeTGDIg4yaIyLRMk";
 const defaultSettings = {
   distance: 0.5,       // Default search radius in miles
   price: "2,3",        // Google Places API uses 1-4 ($ - $$$$)
@@ -29,7 +29,7 @@ async function fetchRestaurants() {
         const settings = await loadSettings();
   
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${milesToMeters(settings.distance)}&type=restaurant&keyword=healthy&minprice=${settings.price[0]}&maxprice=${settings.price[2]}&key=${apiKey}`;
-  
+        
         const response = await fetch(url);
         const data = await response.json();
   
@@ -165,4 +165,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       await fetchRestaurants(); // Fetch restaurants with the new settings
     });
   });  
+});
+
+// show log
+document.getElementById("view-log").addEventListener("click", () => {
+  chrome.storage.local.get({ restaurantLog: [] }, ({ restaurantLog }) => {
+    const ul = document.getElementById("restaurant-log");
+    ul.innerHTML = "";
+    restaurantLog.forEach(({ name, link, when }) => {
+      const li = document.createElement("li");
+      const time = new Date(when).toLocaleString();
+      li.innerHTML = `
+        <strong>${name}</strong><br>
+        <a href="${link}" target="_blank">Map</a><br>
+        <small>${time}</small>
+      `;
+      li.style.marginBottom = "8px";
+      ul.appendChild(li);
+    });
+    document.getElementById("main-view").style.display = "none";
+    document.getElementById("log-view").style.display = "block";
+  });
+});
+
+// close log
+document.getElementById("close-log").addEventListener("click", () => {
+  document.getElementById("log-view").style.display = "none";
+  document.getElementById("main-view").style.display = "block";
 });

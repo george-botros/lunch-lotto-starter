@@ -20,24 +20,30 @@ async function loadSettings() {
 
 async function fetchRestaurants() {
     try {
+      showProgress();
+      updateProgress(10);
       // 🔄 Show Loading GIF and Hide the Wheel
       document.getElementById("loading-gif").style.display = "block";
       document.getElementById("wheel").style.display = "none";
   
       navigator.geolocation.getCurrentPosition(async (position) => {
+        updateProgress(25);
         const { latitude: lat, longitude: lng } = position.coords;
         const settings = await loadSettings();
+        updateProgress(40);
   
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${milesToMeters(settings.distance)}&type=restaurant&keyword=healthy&minprice=${settings.price[0]}&maxprice=${settings.price[2]}&key=${apiKey}`;
         
         const response = await fetch(url);
         const data = await response.json();
+        updateProgress(60);
   
         if (!data.results || data.results.length === 0) {
           console.error("❌ No restaurants found!");
           alert("No restaurants found! Try adjusting your settings.");
           return;
         }
+        updateProgress(75);
   
         // ✅ Extract restaurant data
         let restaurants = data.results.map((place) => ({
@@ -73,16 +79,20 @@ async function fetchRestaurants() {
           document.getElementById("loading-gif").style.display = "none"; // ✅ Hide Loading GIF
           document.getElementById("wheel").style.display = "block"; // ✅ Show the wheel
           updateWheel(restaurants); // ✅ Update the wheel with restaurant names
+          updateProgress(100);
+          setTimeout(hideProgress, 300); 
         }, 2000);
   
       }, (error) => {
         console.error("❌ Geolocation error:", error);
         alert("Please enable location access to fetch restaurants.");
+        hideProgress();
         document.getElementById("loading-gif").style.display = "none"; // ✅ Hide loading GIF on error
         document.getElementById("wheel").style.display = "block";
       });
     } catch (error) {
       console.error("❌ Error fetching restaurants:", error);
+      hideProgress();
       document.getElementById("loading-gif").style.display = "none"; // ✅ Hide loading GIF on error
       document.getElementById("wheel").style.display = "block";
     }
@@ -193,3 +203,15 @@ document.getElementById("close-log").addEventListener("click", () => {
   document.getElementById("log-view").style.display = "none";
   document.getElementById("main-view").style.display = "block";
 });
+
+const progressBar = document.getElementById("api-progress");
+function showProgress() {
+  progressBar.value = 0;
+  progressBar.style.display = "block";
+}
+function updateProgress(pct) {
+  progressBar.value = pct;
+}
+function hideProgress() {
+  progressBar.style.display = "none";
+}

@@ -22,6 +22,7 @@
         <img id="loading-gif" src="assets/loading.gif" alt="Loading..." style="display: none;">
         <canvas id="wheel" width="310" height="310"></canvas>
         <button id="spin">Spin</button>
+        <button id="view-log">📜 View Log</button>
       </div>
       <!-- 🏆 Selected Restaurant Result -->
       <div id="result-container" style="display: none;">
@@ -32,6 +33,13 @@
       <button id="open-settings">
         <img src="assets/filter.jpg" alt="Settings">
       </button>
+    </div>
+
+    <!-- 🍴 Restaurant Log Panel -->
+    <div id="log-view" class="view" style="display:none;">
+      <h3>📜 Your Picks</h3>
+      <ul id="restaurant-log" style="max-height:200px; overflow-y:auto; list-style:none; padding:0;"></ul>
+      <button id="close-log">← Back</button>
     </div>
 
     <!-- Settings View -->
